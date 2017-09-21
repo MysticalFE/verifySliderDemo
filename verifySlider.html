@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+	<title>VerifySlider</title>
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		.wrapper {
+			position: relative;
+			width: 300px;
+			height: 40px;
+			background: #eee;
+		}
+		.slider {
+			margin-top: 20px;
+		}
+		.moveSlider {
+			/* position: absolute; */
+			z-index: 100;
+		}
+		.fixedSlider {
+			position: absolute;
+			left: 150px;
+			width: 40px;
+			height: 100%;
+			background: yellow;
+		}
+		.bgColor {
+			position: absolute;
+			width: 40px;
+			height: 100%;
+			background: red;
+		}
+		.text {
+			position: absolute;
+			width: 100%;
+			text-align: left;
+			line-height: 40px;
+			margin-left: 45px;
+		}
+		.btn,.moveSlider {
+			position: absolute;
+			width: 40px;
+			height: 38px;
+			background: #fff url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAA3hpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wTU09Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9tbS8iIHhtbG5zOnN0UmVmPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvc1R5cGUvUmVzb3VyY2VSZWYjIiB4bWxuczp4bXA9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC8iIHhtcE1NOk9yaWdpbmFsRG9jdW1lbnRJRD0ieG1wLmRpZDo0ZDhlNWY5My05NmI0LTRlNWQtOGFjYi03ZTY4OGYyMTU2ZTYiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6NTEyNTVEMURGMkVFMTFFNEI5NDBCMjQ2M0ExMDQ1OUYiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6NTEyNTVEMUNGMkVFMTFFNEI5NDBCMjQ2M0ExMDQ1OUYiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo2MTc5NzNmZS02OTQxLTQyOTYtYTIwNi02NDI2YTNkOWU5YmUiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6NGQ4ZTVmOTMtOTZiNC00ZTVkLThhY2ItN2U2ODhmMjE1NmU2Ii8+IDwvcmRmOkRlc2NyaXB0aW9uPiA8L3JkZjpSREY+IDwveDp4bXBtZXRhPiA8P3hwYWNrZXQgZW5kPSJyIj8+YiRG4AAAALFJREFUeNpi/P//PwMlgImBQkA9A+bOnfsIiBOxKcInh+yCaCDuByoswaIOpxwjciACFegBqZ1AvBSIS5OTk/8TkmNEjwWgQiUgtQuIjwAxUF3yX3xyGIEIFLwHpKyAWB+I1xGSwxULIGf9A7mQkBwTlhBXAFLHgPgqEAcTkmNCU6AL9d8WII4HOvk3ITkWJAXWUMlOoGQHmsE45ViQ2KuBuASoYC4Wf+OUYxz6mQkgwAAN9mIrUReCXgAAAABJRU5ErkJggg==) center no-repeat;
+			border: 1px solid #ccc;
+		}
+	</style>
+</head>
+<body>
+	<section class="wrapper">
+		<div class="bgColor"></div>
+		<div class="text">拖动滑块验证</div>
+		<div class="btn"></div>
+	</section>
+	<section class="slider wrapper">
+		<div class="moveSlider"></div>
+		<div class="fixedSlider"></div>
+	</section>
+	<script type="text/javascript">
+		const wrapper = document.querySelector('.wrapper')
+		const bgColor = document.querySelector('.bgColor')
+		const text = document.querySelector('.text')
+		const btn = document.querySelector('.btn')
+		const moveSlider = document.querySelector('.moveSlider')
+		const fixedSlider = document.querySelector('.fixedSlider')
+		const VSlider = new class {
+			constructor() {
+				this.wrapper = wrapper
+				this.bgColor = bgColor
+				this.text = text
+				this.btn = btn
+				this.moveSlider = moveSlider
+				this.fixedSlider = fixedSlider
+				this.isVerify = false
+				this.touchMove()
+			}
+			touchMove() {
+				let x = 0;
+				const handler = e => {
+					console.log(e)
+					const touch = e.touches[0]
+					x = touch.clientX >= 0 ? touch.clientX : 0
+					const tranx = "translate3d("+x+"px, 0px, 0px)"
+					this.btn.style.transform = tranx//上面滑块的偏移
+					this.moveSlider.style.transform= tranx//下面滑块的偏移
+					// console.log(this.btn.style.transform.match(/translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/g)[0] + 'px')
+	            	this.bgColor.style.width = x + 'px'
+	            	//this.bgColor.style.width = this.btn.style.transform.match(/translate3d\(\d+px,\s*(\d+)px,\s*(\d+)px\)/i)[1] + 'px'
+	            	if (x >= this.fixedSlider.offsetLeft) {
+						this.isVerify = true
+		            	this.text.innerHTML = '通过验证'
+		            	this.btn.removeEventListener('touchmove',handler,false)//移除move事件
+					}
+				}
+				this.btn.addEventListener('touchmove', handler,false)
+			}
+		}(wrapper,bgColor,text,btn,moveSlider,fixedSlider)
+	</script>
+</body>
+</html>

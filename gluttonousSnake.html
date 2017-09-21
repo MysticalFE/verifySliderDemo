@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Gluttonous Snake</title>
+	<style type="text/css">
+		*{
+			margin: 0;
+			padding: 0;
+		}
+		.box{
+			width: 800px;
+			height: 800px;
+			background:#eee;
+			position: relative;
+			margin: 0 auto;
+			border: 2px solid #000;
+			z-index: 999;
+		}
+		.snakeBodyList{
+			width: 10px;
+			height: 10px;
+			-webkit-border-radius: 50%;
+			border-radius: 50%;
+			background: red;
+			position: absolute;
+			left: 100px;
+			top: 100px;
+		}
+		.food {
+            height: 10px;
+            width: 10px;
+            position: absolute;
+            background-color: blueviolet;
+            border-radius: 40%;
+        }
+        .over {
+            height: 310px;
+            width: 510px;
+            background-color: #fff;
+            position: absolute;
+            top: 0;
+            left: 0;
+            padding-top: 200px;
+            text-align: center;
+            font: 500 30px/50px "微软雅黑";
+            display: none;
+        }
+	</style>
+</head>
+<body>
+	<div class="box">
+		<div class="snakeBody">
+			<div class="snakeBodyList"></div>
+			<div class="snakeBodyList" style="top:90px"></div>
+			<div class="snakeBodyList" style="top:80px"></div>
+		</div>
+		<div class="food"></div>
+	    <div class="over">
+	        game over
+	        <br/>
+	        F5刷新
+	    </div>
+	</div>
+	<script type="text/javascript">
+		function snake(){
+			// this.box = document.getElementsByClassName('box')[0];
+			this.snakeBody = document.getElementsByClassName('snakeBody')[0];
+			this.food = document.getElementsByClassName('food')[0];
+			this.snakeBodyList = document.getElementsByClassName('snakeBodyList');
+			this.snakeX = 100;
+			this.snakeY = 100;
+			this.foodX = 0;
+			this.foodY = 0;
+			this.direction = null;//上 1;右 2;下 3;左 0;
+			this.time = null;
+			this.flag = true;//判断是否结束；false结束;
+		}
+		snake.prototype = {
+			//初始化 method；
+			init:function(){
+				this.keyDown();
+				this.randomFood();
+			},
+			//开始 method；
+			gameStart:function(){
+
+			},
+			//结束 method;
+			gameOver:function(){
+				this.flag = false;
+				clearInterval(this.time);
+				setTimeout(function () {
+				    var gover = document.getElementsByClassName('over')[0];
+				    gover.style.display = 'block';
+				}, 500)
+			},
+			//移动 method;
+			move:function(){
+				this.isknock();
+				if(this.direction == 1){
+					if(this.snakeY > 0){
+						this.snakeY -= 10;
+					}else{
+						this.snakeY = 800;
+					}
+				} else if (this.direction == 2) {
+					if(this.snakeX < 800){
+						this.snakeX += 10;
+					}else{
+						this.snakeX = 0;
+					}
+				} else if (this.direction == 3) {
+					if(this.snakeY < 800){
+						this.snakeY += 10;
+					}else{
+						this.snakeY = 0;
+					}
+				} else if (this.direction == 0) {
+					if(this.snakeX > 0){
+						this.snakeX -= 10;
+					}else{
+						this.snakeX = 800;
+					}
+				}
+				var snakeBodyLast = this.snakeBody.lastElementChild;
+				var snakeBodyFirst = this.snakeBody.firstElementChild;
+				snakeBodyLast.style.left = this.snakeX + 'px';
+				snakeBodyLast.style.top = this.snakeY + 'px';
+				this.snakeBody.insertBefore(snakeBodyLast,snakeBodyFirst);
+				if(this.snakeX === this.foodX && this.snakeY === this.foodY){
+					this.eatFood();
+					this.randomFood();
+				}
+			},
+			//键盘按下 method(上38下40左37右39);
+			keyDown:function(){
+				var _this = this;
+				document.onkeydown = function(e){
+					var e = e || window.event;
+					if(_this.flag){
+						if((e.keyCode == 37) && _this.direction != 2){
+							_this.direction = 0;
+						}else if((e.keyCode == 38) && _this.direction != 3){
+							_this.direction =1;
+						}else if((e.keyCode == 39) && _this.direction != 0){
+							_this.direction = 2;
+						}else if((e.keyCode == 40) && _this.direction != 1){
+							_this.direction = 3;
+						}
+					}
+				}
+				clearInterval(this.time);
+                	this.move();
+            	this.time = setInterval(function () {
+                	_this.move();
+            	}, 130);
+			},
+			//随机生成食物 method;
+			randomFood:function(){
+				this.foodX = parseInt(Math.random()*80)*10;
+				this.foodY = parseInt(Math.random()*80)*10;
+				for(let i = 1;i<this.snakeBodyList.length;i++){
+					if(this.foodX == parseInt(this.snakeBodyList[i].style.left) && this.foodY == parseInt(this.snakeBodyList[i].style.top)){
+						this.random();
+						return;
+					}
+				}
+				this.food.style.top = this.foodX + 'px';
+				this.food.style.left = this.foodX + 'px';
+			},
+			//吃掉食物 method;
+			eatFood:function(){
+				var lastSnake = this.snakeBody.lastElementChild;
+				var cloneLastSnake = lastSnake.cloneNode(true);
+				this.snakeBody.appendChild(cloneLastSnake);
+				this.move();
+			},
+			//判断蛇是否碰撞 method;
+			isknock:function(){
+				for(let i = 1;i<this.snakeBodyList.length;i++){
+					if(i > 4 && this.snakeX == parseInt(this.snakeBodyList[i].style.left) && this.snakeY == parseInt(this.snakeBodyList[i].style.top)){
+						this.gameOver();
+					}
+				}
+			},
+		}
+		var gluSnake = new snake();
+		gluSnake.init();
+	</script>
+</body>
+</html>
